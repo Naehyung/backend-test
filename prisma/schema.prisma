@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Venue {
+  id        String    @id @default(uuid()) @db.Char(36)
+  title     String
+  concerts  Concert[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+}
+
+model Category {
+  name      String    @unique
+  Concert   Concert[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+}
+
+model User {
+  id        String    @id @default(uuid()) @db.Char(36)
+  name      String
+  bookings  Booking[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+}
+
+model Concert {
+  id           String    @id @default(uuid()) @db.Char(36)
+  title        String
+  date         DateTime  @db.Date
+  bookings     Booking[]
+  venue        Venue     @relation(fields: [venueId], references: [id])
+  venueId      String    @map("venue_id") @db.Char(36)
+  category     Category  @relation(fields: [categoryName], references: [name])
+  categoryName String    @map("category_name")
+  capacity     Int
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+}
+
+model Booking {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @map("user_id") @db.Char(36)
+  concert   Concert  @relation(fields: [concertId], references: [id])
+  concertId String   @map("concert_id") @db.Char(36)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@id([userId, concertId])
+}
