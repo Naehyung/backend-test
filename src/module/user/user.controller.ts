@@ -13,8 +13,8 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from 'src/shared/dto/pagination.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { UserAuthGuard } from './guard/user-auth-guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { UserAuthGuard } from './guard/user-auth.guard';
 
 @ApiTags('Users')
 @Controller('user')
@@ -26,7 +26,6 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @UseGuards(UserAuthGuard)
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
     return this.userService.findAll(paginationDto);

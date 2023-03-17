@@ -4,7 +4,6 @@ import PrismaProvider from 'prisma/prisma-provider';
 import { PaginationDto } from 'src/shared/dto/pagination.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserAuthGuard } from './guard/user-auth-guard';
 
 @Injectable()
 export class UserService {
