@@ -19,14 +19,13 @@ import { VenueAuthGuard } from '../venue/guard/venue-auth.guard';
 import { ConcertService } from './concert.service';
 import { CreateConcertDto } from './dto/create-concert.dto';
 import { UpdateConcertDto } from './dto/update-concert.dto';
-import { CreateUpdateConcertInterceptor } from './interceptor/create-update-concert.interceptor';
 
 @ApiTags('Concerts')
 @Controller('concert')
 export class ConcertController {
   constructor(private readonly concertService: ConcertService) {}
 
-  @UseInterceptors(CreateUpdateConcertInterceptor)
+  @UseInterceptors(CheckTransformDateInterceptor)
   @Post()
   @ApiBearerAuth('Authorization')
   @UseGuards(VenueAuthGuard)
@@ -44,7 +43,7 @@ export class ConcertController {
     return this.concertService.findOne(id);
   }
 
-  @UseInterceptors(CreateUpdateConcertInterceptor)
+  @UseInterceptors(CheckTransformDateInterceptor)
   @Patch(':id')
   @ApiBearerAuth('Authorization')
   @UseGuards(VenueAuthGuard)

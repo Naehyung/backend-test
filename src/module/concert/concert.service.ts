@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateConcertDto } from './dto/create-concert.dto';
 import { UpdateConcertDto } from './dto/update-concert.dto';
 import { PrismaClient, Venue } from '@prisma/client';
@@ -11,8 +15,14 @@ export class ConcertService {
 
   constructor(private readonly categoryService: CategoryService) {}
 
-  create(createConcertDto: CreateConcertDto, venue: Venue) {
+  async create(createConcertDto: CreateConcertDto, venue: Venue) {
     const { title, categoryName, capacity, date } = createConcertDto;
+
+    const category = await this.categoryService.findOne(categoryName);
+
+    if (!category) {
+      throw new NotFoundException(`Category ${categoryName} does not exist`);
+    }
 
     return this.prisma.concert.create({
       data: {
