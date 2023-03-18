@@ -6,20 +6,31 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  UsePipes,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { User } from '@prisma/client';
+import GetUser from 'src/shared/decorator/get-user.decorator';
+import { CheckExistPipe } from 'src/shared/pipes/check-exist.pipe';
+import { UserAuthGuard } from '../user/guard/user-auth.guard';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
 
 @ApiTags('Bookings')
+@ApiBearerAuth('Authorization')
+@UseGuards(UserAuthGuard)
 @Controller('booking')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
   @Post()
-  create(@Body() createBookingDto: CreateBookingDto) {
-    return this.bookingService.create(createBookingDto);
+  create(
+    @Body(new CheckExistPipe('concert', 'id', true, 'concertId'))
+    createBookingDto: CreateBookingDto,
+    @GetUser() user: User,
+  ) {
+    return this.bookingService.create(createBookingDto.concertId, user.id);
   }
 
   @Get()
@@ -30,11 +41,6 @@ export class BookingController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.bookingService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookingDto: UpdateBookingDto) {
-    return this.bookingService.update(id, updateBookingDto);
   }
 
   @Delete(':id')

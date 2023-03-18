@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateConcertDto } from './dto/create-concert.dto';
 import { UpdateConcertDto } from './dto/update-concert.dto';
@@ -43,19 +44,34 @@ export class ConcertService {
     });
   }
 
-  findAll() {
-    return `This action returns all concert`;
-  }
+  async update(id: string, updateConcertDto: UpdateConcertDto, venue: Venue) {
+    const concert = await this.prisma.concert.findUnique({
+      where: {
+        id,
+      },
+    });
 
-  findOne(id: string) {
-    return `This action returns a #${id} concert`;
-  }
+    if (concert.venueId !== venue.id) {
+      throw new UnauthorizedException();
+    }
 
-  update(id: string, updateConcertDto: UpdateConcertDto) {
-    return `This action updates a #${id} concert`;
-  }
+    if (updateConcertDto.categoryName) {
+      const category = await this.categoryService.findOne(
+        updateConcertDto.categoryName,
+      );
 
-  remove(id: string) {
-    return `This action removes a #${id} concert`;
+      if (!category) {
+        throw new NotFoundException(
+          `Category ${updateConcertDto.categoryName} does not exist`,
+        );
+      }
+    }
+
+    return this.prisma.concert.update({
+      where: {
+        id,
+      },
+      data: updateConcertDto,
+    });
   }
 }

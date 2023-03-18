@@ -21,41 +21,24 @@ import { CreateConcertDto } from './dto/create-concert.dto';
 import { UpdateConcertDto } from './dto/update-concert.dto';
 
 @ApiTags('Concerts')
+@UseInterceptors(CheckTransformDateInterceptor)
+@ApiBearerAuth('Authorization')
+@UseGuards(VenueAuthGuard)
 @Controller('concert')
 export class ConcertController {
   constructor(private readonly concertService: ConcertService) {}
 
-  @UseInterceptors(CheckTransformDateInterceptor)
   @Post()
-  @ApiBearerAuth('Authorization')
-  @UseGuards(VenueAuthGuard)
   create(@Body() createConcertDto: CreateConcertDto, @GetVenue() venue: Venue) {
     return this.concertService.create(createConcertDto, venue);
   }
 
-  @Get()
-  findAll() {
-    return this.concertService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.concertService.findOne(id);
-  }
-
-  @UseInterceptors(CheckTransformDateInterceptor)
   @Patch(':id')
-  @ApiBearerAuth('Authorization')
-  @UseGuards(VenueAuthGuard)
   update(
-    @Param('id', new CheckExistPipe('concert', true)) id: string,
+    @Param('id', new CheckExistPipe('concert', '', true)) id: string,
     @Body() updateConcertDto: UpdateConcertDto,
+    @GetVenue() venue: Venue,
   ) {
-    return this.concertService.update(id, updateConcertDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.concertService.remove(id);
+    return this.concertService.update(id, updateConcertDto, venue);
   }
 }

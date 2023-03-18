@@ -14,12 +14,18 @@ export class CheckExistPipe implements PipeTransform {
 
   constructor(
     private model: Uncapitalize<Prisma.ModelName>,
+    private property?: string,
     private returnId: boolean = false,
+    private dtoKey?: string,
   ) {}
 
   async transform(value: any, metadata: ArgumentMetadata) {
     if (!value) throw new BadRequestException('Provide a value ');
-    const record = await this.getRecord(value, metadata);
+
+    const record = await this.getRecord(
+      this.dtoKey ? value[this.dtoKey] : value,
+      metadata,
+    );
     if (!record) throw new NotFoundException(`${this.model} not found`);
     return this.returnId ? value : record;
   }
@@ -30,7 +36,7 @@ export class CheckExistPipe implements PipeTransform {
     return this.prisma[this.model as any].findUnique({
       where: {
         //@ts-ignore
-        [metadata.data]: value,
+        [this.property || metadata.data]: value,
       },
     });
   }

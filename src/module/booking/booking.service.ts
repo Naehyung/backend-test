@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
 
 @Injectable()
 export class BookingService {
-  create(createBookingDto: CreateBookingDto) {
+  create(concertId: string, userId: string) {
     return 'This action adds a new booking';
   }
 
@@ -14,10 +14,6 @@ export class BookingService {
 
   findOne(id: string) {
     return `This action returns a #${id} booking`;
-  }
-
-  update(id: string, updateBookingDto: UpdateBookingDto) {
-    return `This action updates a #${id} booking`;
   }
 
   remove(id: string) {
