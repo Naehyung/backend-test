@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsDateString,
-  IsNumber,
-  IsNotEmpty,
-  IsString,
-  Min,
-} from 'class-validator';
+import { IsNumber, IsNotEmpty, IsString, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateConcertDto {
@@ -14,15 +8,21 @@ export class CreateConcertDto {
   @IsString()
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'string', format: 'date', example: '2022-03-18' })
   @IsNotEmpty()
-  @IsDateString()
-  date: Date;
+  date: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 1,
+  })
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
   @Min(1)
-  capcaity: number;
+  capacity: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  categoryName: string;
 }

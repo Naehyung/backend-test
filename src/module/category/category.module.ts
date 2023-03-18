@@ -8,5 +8,6 @@ import { VenueModule } from '../venue/venue.module';
   controllers: [CategoryController],
   providers: [CategoryService],
   imports: [VenueModule],
+  exports: [CategoryService],
 })
 export class CategoryModule {}

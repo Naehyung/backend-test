@@ -1,4 +1,9 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateVenueDto } from './create-venue.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class UpdateVenueDto extends PartialType(CreateVenueDto) {}
+export class UpdateVenueDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  newTitle: string;
+}

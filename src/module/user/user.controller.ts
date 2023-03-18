@@ -27,6 +27,8 @@ export class UserController {
   }
 
   @Get()
+  @UseGuards(UserAuthGuard)
+  @ApiBearerAuth('Authorization')
   findAll(@Query() paginationDto: PaginationDto) {
     return this.userService.findAll(paginationDto);
   }
