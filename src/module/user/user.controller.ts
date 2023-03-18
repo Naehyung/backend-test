@@ -1,50 +1,40 @@
 import {
   Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
   Delete,
+  Get,
+  Param,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from 'src/shared/dto/pagination.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { BookingService } from '../booking/booking.service';
+import { ConcertService } from '../concert/concert.service';
 import { UserAuthGuard } from './guard/user-auth.guard';
+import GetUser from 'src/shared/decorator/get-user.decorator';
+import { User } from '@prisma/client';
 
 @ApiTags('Users')
 @Controller('user')
+@ApiBearerAuth('Authorization')
+@UseGuards(UserAuthGuard)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly bookingService: BookingService,
+  ) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @Get('/bookings')
+  findAllBookings(
+    @Query() paginationDto: PaginationDto,
+    @GetUser() user: User,
+  ) {
+    return this.bookingService.findAllByUserId(paginationDto, user.id);
   }
 
-  @Get()
-  @UseGuards(UserAuthGuard)
-  @ApiBearerAuth('Authorization')
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.userService.findAll(paginationDto);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(id);
+  @Delete('/bookings/concert/:id')
+  removeBooking(@GetUser() user: User, @Param('id') concertId: string) {
+    return this.bookingService.remove(user.id, concertId);
   }
 }

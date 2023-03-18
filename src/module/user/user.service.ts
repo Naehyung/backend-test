@@ -31,21 +31,4 @@ export class UserService {
       },
     });
   }
-
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return this.prisma.user.update({
-      where: {
-        id,
-      },
-      data: updateUserDto,
-    });
-  }
-
-  remove(id: string) {
-    return this.prisma.user.delete({
-      where: {
-        id,
-      },
-    });
-  }
 }

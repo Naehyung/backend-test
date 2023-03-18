@@ -25,26 +25,7 @@ export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
   @Post()
-  create(
-    @Body(new CheckExistPipe('concert', 'id', true, 'concertId'))
-    createBookingDto: CreateBookingDto,
-    @GetUser() user: User,
-  ) {
+  create(@Body() createBookingDto: CreateBookingDto, @GetUser() user: User) {
     return this.bookingService.create(createBookingDto.concertId, user.id);
-  }
-
-  @Get()
-  findAll() {
-    return this.bookingService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bookingService.findOne(id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bookingService.remove(id);
   }
 }

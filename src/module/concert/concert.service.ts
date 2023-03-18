@@ -9,6 +9,8 @@ import { UpdateConcertDto } from './dto/update-concert.dto';
 import { PrismaClient, Venue } from '@prisma/client';
 import PrismaProvider from 'prisma/prisma-provider';
 import { CategoryService } from '../category/category.service';
+import { ConcertPaginationDto } from './dto/concert-pagination.dto';
+import * as moment from 'moment';
 
 @Injectable()
 export class ConcertService {
@@ -72,6 +74,56 @@ export class ConcertService {
         id,
       },
       data: updateConcertDto,
+    });
+  }
+
+  findOne(id: string) {
+    return this.prisma.concert.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async findAll(concertPaginationDto: ConcertPaginationDto) {
+    if (concertPaginationDto.categoryName) {
+      const category = await this.categoryService.findOne(
+        concertPaginationDto.categoryName,
+      );
+      if (!category) {
+        throw new NotFoundException(
+          `Category ${concertPaginationDto.categoryName} does not exist`,
+        );
+      }
+    }
+
+    return this.prisma.concert.findMany({
+      where: {
+        ...(concertPaginationDto.title
+          ? {
+              title: {
+                contains: concertPaginationDto.title,
+              },
+            }
+          : {}),
+        ...(concertPaginationDto.date
+          ? {
+              date: {
+                equals: moment(
+                  concertPaginationDto.date,
+                  'YYYY-MM-DD',
+                ).toISOString(),
+              },
+            }
+          : {}),
+        ...(concertPaginationDto.categoryName
+          ? {
+              categoryName: concertPaginationDto.categoryName,
+            }
+          : {}),
+      },
+      take: concertPaginationDto.take,
+      skip: concertPaginationDto.take * (concertPaginationDto.page - 1),
     });
   }
 }
