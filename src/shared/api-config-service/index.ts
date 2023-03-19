@@ -6,7 +6,6 @@ export class ApiConfigService {
   constructor(private configService: ConfigService) {}
 
   get projectName(): string {
-    console.log('configService', this.configService.get('PROJECT_NAME'));
     return this.configService.getOrThrow('PROJECT_NAME');
   }
 

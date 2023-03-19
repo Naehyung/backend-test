@@ -10,8 +10,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const apiConfigService = new ApiConfigService(configService);
 
-  console.log('configService', apiConfigService.projectName);
-
   app.setGlobalPrefix('api/v1').useGlobalPipes(
     new ValidationPipe({
       transform: true,
