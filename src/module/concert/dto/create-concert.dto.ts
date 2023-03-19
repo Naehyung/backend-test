@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsNotEmpty, IsString, Min } from 'class-validator';
+import { IsNumber, IsNotEmpty, IsString, Min, IsInt } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateConcertDto {
@@ -16,7 +16,7 @@ export class CreateConcertDto {
     example: 1,
   })
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   @Type(() => Number)
   @Min(1)
   capacity: number;
