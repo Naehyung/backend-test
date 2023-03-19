@@ -5,10 +5,6 @@ import { ConfigService } from '@nestjs/config';
 export class ApiConfigService {
   constructor(private configService: ConfigService) {}
 
-  get isDevelopment(): boolean {
-    return this.configService.get('NODE_ENV') === 'development';
-  }
-
   get projectName(): string {
     return this.configService.getOrThrow('PROJECT_NAME');
   }

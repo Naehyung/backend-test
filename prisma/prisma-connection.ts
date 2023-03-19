@@ -8,7 +8,7 @@ export default class PrismaConnection
 {
   private logger = new Logger('DATABASE');
 
-  constructor(apiConfigService: ApiConfigService) {
+  constructor() {
     super({
       log: [
         {
@@ -18,7 +18,7 @@ export default class PrismaConnection
       ],
     });
 
-    if (apiConfigService.isDevelopment) this.printQuery();
+    this.printQuery();
   }
   async onModuleInit() {
     await this.$connect();

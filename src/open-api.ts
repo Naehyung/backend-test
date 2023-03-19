@@ -6,11 +6,9 @@ export default class OpenApi {
   constructor(private apiConfigService: ApiConfigService) {}
 
   async handler(app: INestApplication) {
-    if (this.apiConfigService.isDevelopment) {
-      const document = SwaggerModule.createDocument(app, this.swaggerSettings);
+    const document = SwaggerModule.createDocument(app, this.swaggerSettings);
 
-      SwaggerModule.setup('api/swagger', app, document);
-    }
+    SwaggerModule.setup('api/swagger', app, document);
   }
 
   get swaggerSettings() {
