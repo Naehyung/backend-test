@@ -14,19 +14,19 @@ export class UserAuthStrategy extends PassportStrategy(Strategy, 'user-auth') {
     const authorizationHeader = req.headers['authorization'];
 
     if (!authorizationHeader) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('No user found');
     }
 
     const [, userId] = authorizationHeader.split('Bearer ');
 
     if (!userId) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('No user found');
     }
 
     const user = await this.userService.findOne(userId);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('No user found');
     }
 
     return user;

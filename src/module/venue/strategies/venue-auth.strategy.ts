@@ -17,19 +17,19 @@ export class VenueAuthStrategy extends PassportStrategy(
     const authorizationHeader = req.headers['authorization'];
 
     if (!authorizationHeader) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('No venue found');
     }
 
     const [, venueId] = authorizationHeader.split('Bearer ');
 
     if (!venueId) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('No venue found');
     }
 
     const venue = await this.venueService.findOne(venueId);
 
     if (!venue) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('No venue found');
     }
 
     return venue;

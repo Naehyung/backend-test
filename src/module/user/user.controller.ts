@@ -33,7 +33,7 @@ export class UserController {
     return this.bookingService.findAllByUserId(paginationDto, user.id);
   }
 
-  @Delete('/bookings/concert/:id')
+  @Delete('/booking/concert/:id')
   removeBooking(@GetUser() user: User, @Param('id') concertId: string) {
     return this.bookingService.remove(user.id, concertId);
   }
