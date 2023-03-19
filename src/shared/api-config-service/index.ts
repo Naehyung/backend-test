@@ -6,12 +6,10 @@ export class ApiConfigService {
   constructor(private configService: ConfigService) {}
 
   get projectName(): string {
-    // return this.configService.getOrThrow('PROJECT_NAME');
-    return 'Backend-Test';
+    return this.configService.getOrThrow('PROJECT_NAME');
   }
 
   get applicationPort(): number {
-    // return Number(this.configService.get('APPLICATION_PORT'));
-    return 3306;
+    return Number(this.configService.get('APPLICATION_PORT'));
   }
 }

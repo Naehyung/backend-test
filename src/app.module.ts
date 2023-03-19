@@ -14,7 +14,6 @@ import { ConcertModule } from './module/concert/concert.module';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: ConfigSchemaValidation.validationSchema,
-      envFilePath: `${__dirname}/../.env`,
     }),
     UserModule,
     VenueModule,
