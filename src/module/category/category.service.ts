@@ -9,7 +9,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 export class CategoryService {
   private readonly prisma: PrismaClient = PrismaProvider.getConnection();
   async create(createCategoryDto: CreateCategoryDto) {
-    const category = this.prisma.category.findUnique({
+    const category = await this.prisma.category.findUnique({
       where: {
         name: createCategoryDto.name,
       },
