@@ -14,6 +14,17 @@ export class BookingService {
   private readonly prisma: PrismaClient = PrismaProvider.getConnection();
 
   async create(concertId: string, userId: string) {
+    const bookings = await this.prisma.booking.findMany({
+      where: {
+        userId,
+        concertId,
+      },
+    });
+
+    if (bookings.length > 0) {
+      throw new NotAcceptableException('You have already booked this concert');
+    }
+
     const concert = await this.concertService.findOne(concertId);
 
     if (!concert) {
