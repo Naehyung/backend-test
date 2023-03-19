@@ -8,7 +8,7 @@ export default class PrismaConnection
 {
   private logger = new Logger('DATABASE');
 
-  constructor() {
+  constructor(apiConfigService: ApiConfigService) {
     super({
       log: [
         {
