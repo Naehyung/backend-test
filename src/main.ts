@@ -3,12 +3,14 @@ import { AppModule } from './app.module';
 import OpenApi from './open-api';
 import { ApiConfigService } from './shared/api-config-service';
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const apiConfigService = new ApiConfigService(configService);
+
+  console.log('configService', apiConfigService.projectName);
 
   app.setGlobalPrefix('api/v1').useGlobalPipes(
     new ValidationPipe({
