@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import PrismaProvider from 'prisma/prisma-provider';
 import { PaginationDto } from 'src/shared/dto/pagination.dto';
@@ -8,7 +8,19 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 @Injectable()
 export class CategoryService {
   private readonly prisma: PrismaClient = PrismaProvider.getConnection();
-  create(createCategoryDto: CreateCategoryDto) {
+  async create(createCategoryDto: CreateCategoryDto) {
+    const category = this.prisma.category.findUnique({
+      where: {
+        name: createCategoryDto.name,
+      },
+    });
+
+    if (category) {
+      throw new NotAcceptableException(
+        `${createCategoryDto.name} already exists`,
+      );
+    }
+
     return this.prisma.category.create({
       data: createCategoryDto,
     });

@@ -109,10 +109,9 @@ export class ConcertService {
         ...(concertPaginationDto.date
           ? {
               date: {
-                equals: moment(
-                  concertPaginationDto.date,
-                  'YYYY-MM-DD',
-                ).toISOString(),
+                equals: moment
+                  .utc(concertPaginationDto.date, 'YYYY-MM-DD')
+                  .toISOString(),
               },
             }
           : {}),

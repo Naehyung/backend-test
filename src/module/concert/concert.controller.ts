@@ -49,6 +49,7 @@ export class ConcertController {
 
   @Get()
   @UseGuards(UserAuthGuard)
+  @UseInterceptors(CheckTransformDateInterceptor)
   findAll(@Query() concertPaginationDto: ConcertPaginationDto) {
     return this.concertService.findAll(concertPaginationDto);
   }

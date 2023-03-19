@@ -61,7 +61,23 @@ export class BookingService {
     });
   }
 
-  remove(userId: string, concertId: string) {
+  async remove(userId: string, concertId: string) {
+    const bookings = await this.prisma.booking.findMany({
+      where: {
+        userId: userId,
+        concertId: concertId,
+      },
+      include: {
+        concert: true,
+      },
+    });
+
+    if (bookings.length === 0) {
+      throw new NotAcceptableException(
+        "You don't have booking with this concert",
+      );
+    }
+
     return this.prisma.booking.deleteMany({
       where: {
         AND: {

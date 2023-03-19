@@ -13,7 +13,12 @@ export class CheckTransformDateInterceptor implements NestInterceptor {
   constructor(private readonly categoryService: CategoryService) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const req = context.switchToHttp().getRequest();
-    req.body.date = new CheckTransformDatePipe().transform(req.body.date);
+    if (req.body.date) {
+      req.body.date = new CheckTransformDatePipe().transform(req.body.date);
+    }
+    if (req.query.date) {
+      req.query.date = new CheckTransformDatePipe().transform(req.query.date);
+    }
     return next.handle();
   }
 }
